@@ -1,0 +1,64 @@
+float mesafeOlc(int trig, int echo)
+{
+  pinMode(trig, OUTPUT);
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  pinMode(echo, INPUT);
+  return pulseIn(echo, HIGH, 30000) / 58.0;
+}
+
+double mesafe;
+double sure;
+int kirmiziLed = 9;
+int sariLed = 10;
+int yesilLed = 11;
+int buzzer = 13;
+
+
+void setup()
+{
+  pinMode(kirmiziLed, OUTPUT);
+  pinMode(sariLed, OUTPUT);
+  pinMode(yesilLed, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+}
+
+void loop()
+{
+  mesafe = mesafeOlc(7, 6);
+  sure = mesafe / 50;
+  if (mesafe < 10)                      //Mesafe 10cm'den küçük mü?
+  {
+    digitalWrite(kirmiziLed, HIGH);
+    tone(buzzer, 523, 500);             //Kırmızı alarm
+    delay(500);
+  }
+  else
+  {
+    digitalWrite(kirmiziLed, LOW);
+  }
+  if (mesafe > 10 && mesafe < 20)       //Mesafe 10-20cm arasında mı?
+  {
+    digitalWrite(sariLed, HIGH);
+    tone(buzzer, 262, 250);             //Sarı alarm
+    delay(250);
+  }
+  else
+  {
+    digitalWrite(sariLed, LOW);
+  }
+  if (mesafe > 20 && mesafe < 30)       //Mesafe 20-30cm arasında mı?
+  {
+    digitalWrite(yesilLed, HIGH);
+    tone(buzzer, 131, 125);             //Yeşil alarm
+    delay(125);
+  }
+  else
+  {
+    digitalWrite(yesilLed, LOW);
+  }
+  delay(sure);
+}
